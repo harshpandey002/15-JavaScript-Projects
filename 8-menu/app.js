@@ -82,38 +82,40 @@ const menu = [
 ];
 
 const sectionCenter = document.querySelector(".section-center");
-const filterBtns = document.querySelectorAll(".filter-btn");
+const container = document.querySelector(".btn-container");
 
 // Load items
 window.addEventListener("DOMContentLoaded", () => {
   displayMenuItems(menu);
-});
-
-// Filter items
-filterBtns.forEach((btn) => {
-  btn.addEventListener("click", (e) => {
-    // console.log(e.currentTarget.dataset.id);
-    const category = e.currentTarget.dataset.id;
-    const menuCategory = menu.filter((menuItem) => {
-      // console.log(menuItem.category);
-      if (menuItem.category === category) {
-        return menuItem;
+  displayMenuBtns();
+  const filterBtns = container.querySelectorAll(".filter-btn");
+  // Filter items
+  filterBtns.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      // console.log(e.currentTarget.dataset.id);
+      const category = e.currentTarget.dataset.id;
+      const menuCategory = menu.filter((menuItem) => {
+        // console.log(menuItem.category);
+        if (menuItem.category === category) {
+          return menuItem;
+        }
+      });
+      // console.log(menuCategory);
+      if (category === "all") {
+        displayMenuItems(menu);
+      } else {
+        displayMenuItems(menuCategory);
       }
     });
-    // console.log(menuCategory);
-    if (category === "all") {
-      displayMenuItems(menu);
-    } else {
-      displayMenuItems(menuCategory);
-    }
   });
 });
 
 const displayMenuItems = (menuItems) => {
-  let displayMenu = menuItems.map((item) => {
-    // console.log(item);
+  let displayMenu = menuItems
+    .map((item) => {
+      // console.log(item);
 
-    return `<article class="menu-item">
+      return `<article class="menu-item">
     <img src=${item.img} class="photo" alt=${item.title}>
     <div class="item-info">
       <header>
@@ -125,7 +127,24 @@ const displayMenuItems = (menuItems) => {
       </p>
     </div>
   </article>`;
-  });
-  displayMenu = displayMenu.join("");
+    })
+    .join("");
   sectionCenter.innerHTML = displayMenu;
+};
+
+const displayMenuBtns = () => {
+  const categories = ["all"];
+  menu.map((item) => {
+    if (!categories.includes(item.category)) {
+      categories.push(item.category);
+    }
+  });
+  const categoryBtns = categories
+    .map((category) => {
+      return `
+    <button class="filter-btn" data-id=${category}>${category}</button>
+    `;
+    })
+    .join("");
+  container.innerHTML = categoryBtns;
 };
